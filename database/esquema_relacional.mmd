@@ -1,0 +1,416 @@
+erDiagram
+    direction LR
+    %% Esquema fisico completo de bd_js_ensenanza. Extraido el 2026-09-28.
+    %% PK: primaria; FK: foranea; UK: unicidad individual.
+    %% Varias PK en una tabla forman una PK compuesta.
+    %% Comentarios de atributos: tipo SQL real, nulabilidad y autoincremento.
+    %% Linea continua: FK forma parte de PK. Discontinua: relacion no identificadora.
+    %% Solo se dibujan FK declaradas. sessions.user_id esta indexado pero NO tiene FK.
+    adscripciones_asesores {
+        bigint id_adscripcion PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        bigint id_asesor FK "bigint(20) unsigned; NOT NULL"
+        bigint id_unidad FK "bigint(20) unsigned; NOT NULL"
+        date fecha_inicio "date; NOT NULL"
+        date fecha_fin "date; NULL"
+        text motivo_fin "text; NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+        timestamp deleted_at "timestamp; NULL"
+    }
+    adscripciones_personal {
+        bigint id_adscripcion PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        bigint id_personal FK "bigint(20) unsigned; NOT NULL"
+        bigint id_unidad FK "bigint(20) unsigned; NOT NULL"
+        date fecha_inicio "date; NOT NULL"
+        date fecha_fin "date; NULL"
+        text motivo_fin "text; NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+        timestamp deleted_at "timestamp; NULL"
+    }
+    asesores {
+        bigint id_asesor PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        bigint id_persona FK, UK "bigint(20) unsigned; NOT NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+        timestamp deleted_at "timestamp; NULL"
+    }
+    asigna_asesores {
+        bigint id_asigna_asesor PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        bigint id_asesor FK "bigint(20) unsigned; NOT NULL"
+        bigint id_personal FK "bigint(20) unsigned; NOT NULL"
+        date fecha_asignacion "date; NOT NULL"
+        date fecha_fin "date; NULL"
+        text motivo_fin "text; NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+        timestamp deleted_at "timestamp; NULL"
+    }
+    cache {
+        varchar key PK "varchar(255); NOT NULL"
+        mediumtext value "mediumtext; NOT NULL"
+        int expiration "int(11); NOT NULL"
+    }
+    cache_locks {
+        varchar key PK "varchar(255); NOT NULL"
+        varchar owner "varchar(255); NOT NULL"
+        int expiration "int(11); NOT NULL"
+    }
+    carreras {
+        bigint id_carrera PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        varchar nombre "varchar(255); NOT NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+        timestamp deleted_at "timestamp; NULL"
+    }
+    categorias {
+        bigint id_categoria PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        varchar nombre "varchar(255); NOT NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+        timestamp deleted_at "timestamp; NULL"
+    }
+    datos_academicos {
+        bigint id_dat_academico PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        bigint id_personal FK, UK "bigint(20) unsigned; NOT NULL"
+        bigint id_institucion FK "bigint(20) unsigned; NOT NULL"
+        bigint id_carrera FK "bigint(20) unsigned; NOT NULL"
+        bigint id_nivel_academico FK "bigint(20) unsigned; NOT NULL"
+        varchar matricula "varchar(100); NOT NULL"
+        decimal promedio "decimal(5,2); NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+        timestamp deleted_at "timestamp; NULL"
+    }
+    documentos_investigacion {
+        bigint id_documento PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        bigint id_personal FK "bigint(20) unsigned; NOT NULL"
+        bigint id_tipo_documento FK "bigint(20) unsigned; NOT NULL"
+        bigint id_documento_anterior FK, UK "bigint(20) unsigned; NULL"
+        varchar nombre_archivo "varchar(255); NOT NULL"
+        varchar ruta_archivo "varchar(1024); NOT NULL"
+        int version "int(10) unsigned; NOT NULL"
+        varchar estado "varchar(50); NOT NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+        timestamp deleted_at "timestamp; NULL"
+    }
+    failed_jobs {
+        bigint id PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        varchar uuid UK "varchar(255); NOT NULL"
+        text connection "text; NOT NULL"
+        text queue "text; NOT NULL"
+        longtext payload "longtext; NOT NULL"
+        longtext exception "longtext; NOT NULL"
+        timestamp failed_at "timestamp; NOT NULL"
+    }
+    generos {
+        bigint id_genero PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        varchar nombre "varchar(255); NOT NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+        timestamp deleted_at "timestamp; NULL"
+    }
+    incidencias {
+        bigint id_incidencia PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        bigint id_personal FK "bigint(20) unsigned; NOT NULL"
+        bigint id_tipo_incidencia FK "bigint(20) unsigned; NOT NULL"
+        date fecha_hecho "date; NOT NULL"
+        datetime fecha_registro "datetime; NOT NULL"
+        varchar evidencia "varchar(1024); NULL"
+        text descripcion "text; NOT NULL"
+        varchar estado "varchar(50); NOT NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+        timestamp deleted_at "timestamp; NULL"
+    }
+    instituciones {
+        bigint id_institucion PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        varchar nombre "varchar(255); NOT NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+        timestamp deleted_at "timestamp; NULL"
+    }
+    jobs {
+        bigint id PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        varchar queue "varchar(255); NOT NULL"
+        longtext payload "longtext; NOT NULL"
+        tinyint attempts "tinyint(3) unsigned; NOT NULL"
+        int reserved_at "int(10) unsigned; NULL"
+        int available_at "int(10) unsigned; NOT NULL"
+        int created_at "int(10) unsigned; NOT NULL"
+    }
+    job_batches {
+        varchar id PK "varchar(255); NOT NULL"
+        varchar name "varchar(255); NOT NULL"
+        int total_jobs "int(11); NOT NULL"
+        int pending_jobs "int(11); NOT NULL"
+        int failed_jobs "int(11); NOT NULL"
+        longtext failed_job_ids "longtext; NOT NULL"
+        mediumtext options "mediumtext; NULL"
+        int cancelled_at "int(11); NULL"
+        int created_at "int(11); NOT NULL"
+        int finished_at "int(11); NULL"
+    }
+    jurisdicciones {
+        bigint id_jurisdiccion PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        varchar nombre "varchar(255); NOT NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+        timestamp deleted_at "timestamp; NULL"
+    }
+    localidades {
+        bigint id_localidad PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        bigint id_municipio FK "bigint(20) unsigned; NOT NULL"
+        varchar nom_loc "varchar(255); NOT NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+        timestamp deleted_at "timestamp; NULL"
+    }
+    materiales_consultas {
+        bigint id_material PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        bigint id_tipo_documento FK "bigint(20) unsigned; NOT NULL"
+        bigint id_tipo_personal FK "bigint(20) unsigned; NOT NULL"
+        bigint id_carrera FK "bigint(20) unsigned; NOT NULL"
+        varchar titulo "varchar(255); NOT NULL"
+        text descripcion "text; NULL"
+        varchar nombre_archivo "varchar(255); NOT NULL"
+        varchar ruta_archivo "varchar(1024); NOT NULL"
+        datetime fecha_publicacion "datetime; NULL"
+        varchar estado "varchar(50); NOT NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+        timestamp deleted_at "timestamp; NULL"
+    }
+    migrations {
+        int id PK "int(10) unsigned; NOT NULL; auto_increment"
+        varchar migration "varchar(255); NOT NULL"
+        int batch "int(11); NOT NULL"
+    }
+    municipios {
+        bigint id_municipio PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        varchar nom_mun "varchar(255); NOT NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+        timestamp deleted_at "timestamp; NULL"
+    }
+    nacionalidades {
+        bigint id_nacionalidad PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        varchar nombre "varchar(255); NOT NULL"
+        varchar codigo_iso "varchar(3); NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+        timestamp deleted_at "timestamp; NULL"
+    }
+    nivel_academico {
+        bigint id_nivel_academico PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        varchar nombre "varchar(255); NOT NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+        timestamp deleted_at "timestamp; NULL"
+    }
+    observaciones_documentos {
+        bigint id_revision_doc PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        bigint id_documento FK "bigint(20) unsigned; NOT NULL"
+        bigint user_id FK "bigint(20) unsigned; NOT NULL"
+        bigint id_asesor FK "bigint(20) unsigned; NULL"
+        text observacion "text; NOT NULL"
+        datetime fecha_observacion "datetime; NOT NULL"
+        varchar estado "varchar(50); NOT NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+        timestamp deleted_at "timestamp; NULL"
+    }
+    password_reset_tokens {
+        varchar email PK "varchar(255); NOT NULL"
+        varchar token "varchar(255); NOT NULL"
+        timestamp created_at "timestamp; NULL"
+    }
+    permisos {
+        bigint id PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        varchar codigo UK "varchar(100); NOT NULL"
+        varchar nombre "varchar(150); NOT NULL"
+        text descripcion "text; NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+    }
+    personal_formacion {
+        bigint id_personal PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        bigint id_persona FK "bigint(20) unsigned; NOT NULL"
+        bigint id_tipo_personal FK "bigint(20) unsigned; NOT NULL"
+        date fecha_ingreso "date; NULL"
+        date fecha_termino "date; NULL"
+        varchar estado "varchar(50); NOT NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+        timestamp deleted_at "timestamp; NULL"
+    }
+    personas {
+        bigint id_persona PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        bigint id_localidad FK "bigint(20) unsigned; NULL"
+        bigint id_genero FK "bigint(20) unsigned; NULL"
+        bigint id_nacionalidad FK "bigint(20) unsigned; NULL"
+        varchar nombre "varchar(255); NOT NULL"
+        varchar ap "varchar(255); NOT NULL"
+        varchar am "varchar(255); NULL"
+        date fecha_nacimiento "date; NULL"
+        varchar curp UK "varchar(18); NULL"
+        varchar rfc "varchar(13); NULL"
+        varchar desc_domicilio "varchar(255); NULL"
+        varchar correo "varchar(255); NULL"
+        varchar telefono "varchar(20); NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+        timestamp deleted_at "timestamp; NULL"
+    }
+    productividad {
+        bigint id_productividad PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        bigint id_personal FK "bigint(20) unsigned; NOT NULL"
+        bigint id_tipo_consulta FK "bigint(20) unsigned; NOT NULL"
+        date fecha_actividad "date; NOT NULL"
+        datetime fecha_registro "datetime; NOT NULL"
+        varchar evidencia "varchar(1024); NULL"
+        text descripcion "text; NULL"
+        int num_actividades "int(10) unsigned; NOT NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+        timestamp deleted_at "timestamp; NULL"
+    }
+    roles {
+        bigint id PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        varchar codigo UK "varchar(50); NOT NULL"
+        varchar nombre "varchar(100); NOT NULL"
+        text descripcion "text; NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+    }
+    rol_permiso {
+        bigint rol_id PK, FK "bigint(20) unsigned; NOT NULL"
+        bigint permiso_id PK, FK "bigint(20) unsigned; NOT NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+    }
+    sessions {
+        varchar id PK "varchar(255); NOT NULL"
+        bigint user_id "bigint(20) unsigned; NULL"
+        varchar ip_address "varchar(45); NULL"
+        text user_agent "text; NULL"
+        longtext payload "longtext; NOT NULL"
+        int last_activity "int(11); NOT NULL"
+    }
+    tipologias_unidades {
+        bigint id_tipologia PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        varchar nombre "varchar(255); NOT NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+        timestamp deleted_at "timestamp; NULL"
+    }
+    tipos_consultas {
+        bigint id_tipo_consulta PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        varchar nombre "varchar(255); NOT NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+        timestamp deleted_at "timestamp; NULL"
+    }
+    tipos_documentos {
+        bigint id_tipo_documento PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        varchar nombre "varchar(255); NOT NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+        timestamp deleted_at "timestamp; NULL"
+    }
+    tipos_incidencias {
+        bigint id_tipo_incidencia PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        bigint id_categoria FK "bigint(20) unsigned; NOT NULL"
+        varchar nombre "varchar(255); NOT NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+        timestamp deleted_at "timestamp; NULL"
+    }
+    tipos_personal {
+        bigint id_tipo_personal PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        varchar nombre "varchar(255); NOT NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+        timestamp deleted_at "timestamp; NULL"
+    }
+    tipo_unidades {
+        bigint id_tipo_unidad PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        varchar nombre "varchar(255); NOT NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+        timestamp deleted_at "timestamp; NULL"
+    }
+    unidades_medicas {
+        bigint id_unidad PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        bigint id_jurisdiccion FK "bigint(20) unsigned; NOT NULL"
+        bigint id_localidad FK "bigint(20) unsigned; NOT NULL"
+        bigint id_tipo_unidad FK "bigint(20) unsigned; NOT NULL"
+        bigint id_tipologia FK "bigint(20) unsigned; NOT NULL"
+        varchar clave_clues UK "varchar(20); NOT NULL"
+        varchar nom_unidad "varchar(255); NOT NULL"
+        varchar domicilio "varchar(255); NOT NULL"
+        varchar referencias "varchar(255); NULL"
+        char cp "char(5); NOT NULL"
+        varchar horario "varchar(255); NOT NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+        timestamp deleted_at "timestamp; NULL"
+    }
+    users {
+        bigint id PK "bigint(20) unsigned; NOT NULL; auto_increment"
+        varchar name "varchar(255); NOT NULL"
+        varchar email UK "varchar(255); NOT NULL"
+        timestamp email_verified_at "timestamp; NULL"
+        varchar password "varchar(255); NOT NULL"
+        varchar remember_token "varchar(100); NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+        bigint id_persona FK, UK "bigint(20) unsigned; NULL"
+    }
+    usuario_rol {
+        bigint user_id PK, FK "bigint(20) unsigned; NOT NULL"
+        bigint rol_id PK, FK "bigint(20) unsigned; NOT NULL"
+        timestamp created_at "timestamp; NULL"
+        timestamp updated_at "timestamp; NULL"
+    }
+    asesores ||..o{ adscripciones_asesores : "id_asesor a id_asesor"
+    unidades_medicas ||..o{ adscripciones_asesores : "id_unidad a id_unidad"
+    personal_formacion ||..o{ adscripciones_personal : "id_personal a id_personal"
+    unidades_medicas ||..o{ adscripciones_personal : "id_unidad a id_unidad"
+    personas ||..o| asesores : "id_persona a id_persona"
+    asesores ||..o{ asigna_asesores : "id_asesor a id_asesor"
+    personal_formacion ||..o{ asigna_asesores : "id_personal a id_personal"
+    carreras ||..o{ datos_academicos : "id_carrera a id_carrera"
+    instituciones ||..o{ datos_academicos : "id_institucion a id_institucion"
+    nivel_academico ||..o{ datos_academicos : "id_nivel_academico a id_nivel_academico"
+    personal_formacion ||..o| datos_academicos : "id_personal a id_personal"
+    documentos_investigacion |o..o| documentos_investigacion : "id_documento_anterior a id_documento"
+    personal_formacion ||..o{ documentos_investigacion : "id_personal a id_personal"
+    tipos_documentos ||..o{ documentos_investigacion : "id_tipo_documento a id_tipo_documento"
+    personal_formacion ||..o{ incidencias : "id_personal a id_personal"
+    tipos_incidencias ||..o{ incidencias : "id_tipo_incidencia a id_tipo_incidencia"
+    municipios ||..o{ localidades : "id_municipio a id_municipio"
+    carreras ||..o{ materiales_consultas : "id_carrera a id_carrera"
+    tipos_documentos ||..o{ materiales_consultas : "id_tipo_documento a id_tipo_documento"
+    tipos_personal ||..o{ materiales_consultas : "id_tipo_personal a id_tipo_personal"
+    asesores |o..o{ observaciones_documentos : "id_asesor a id_asesor"
+    documentos_investigacion ||..o{ observaciones_documentos : "id_documento a id_documento"
+    users ||..o{ observaciones_documentos : "user_id a id"
+    personas ||..o{ personal_formacion : "id_persona a id_persona"
+    tipos_personal ||..o{ personal_formacion : "id_tipo_personal a id_tipo_personal"
+    generos |o..o{ personas : "id_genero a id_genero"
+    localidades |o..o{ personas : "id_localidad a id_localidad"
+    nacionalidades |o..o{ personas : "id_nacionalidad a id_nacionalidad"
+    personal_formacion ||..o{ productividad : "id_personal a id_personal"
+    tipos_consultas ||..o{ productividad : "id_tipo_consulta a id_tipo_consulta"
+    permisos ||--o{ rol_permiso : "permiso_id a id"
+    roles ||--o{ rol_permiso : "rol_id a id"
+    categorias ||..o{ tipos_incidencias : "id_categoria a id_categoria"
+    jurisdicciones ||..o{ unidades_medicas : "id_jurisdiccion a id_jurisdiccion"
+    localidades ||..o{ unidades_medicas : "id_localidad a id_localidad"
+    tipologias_unidades ||..o{ unidades_medicas : "id_tipologia a id_tipologia"
+    tipo_unidades ||..o{ unidades_medicas : "id_tipo_unidad a id_tipo_unidad"
+    personas |o..o| users : "id_persona a id_persona"
+    roles ||--o{ usuario_rol : "rol_id a id"
+    users ||--o{ usuario_rol : "user_id a id"

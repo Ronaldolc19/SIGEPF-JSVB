@@ -1,0 +1,224 @@
+erDiagram
+    direction LR
+    personas {
+        bigint id_persona PK "bigint(20) U; NOT NULL"
+    }
+    tipos_personal {
+        bigint id_tipo_personal PK "bigint(20) U; NOT NULL"
+        varchar nombre  "varchar(255); NOT NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+        timestamp deleted_at  "timestamp; NULL"
+    }
+    personal_formacion {
+        bigint id_personal PK "bigint(20) U; NOT NULL"
+        bigint id_persona FK "bigint(20) U; NOT NULL"
+        bigint id_tipo_personal FK "bigint(20) U; NOT NULL"
+        date fecha_ingreso  "date; NULL"
+        date fecha_termino  "date; NULL"
+        varchar estado  "varchar(50); NOT NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+        timestamp deleted_at  "timestamp; NULL"
+    }
+    asesores {
+        bigint id_asesor PK "bigint(20) U; NOT NULL"
+        bigint id_persona FK, UK "bigint(20) U; NOT NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+        timestamp deleted_at  "timestamp; NULL"
+    }
+    unidades_medicas {
+        bigint id_unidad PK "bigint(20) U; NOT NULL"
+    }
+    instituciones {
+        bigint id_institucion PK "bigint(20) U; NOT NULL"
+        varchar nombre  "varchar(255); NOT NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+        timestamp deleted_at  "timestamp; NULL"
+    }
+    carreras {
+        bigint id_carrera PK "bigint(20) U; NOT NULL"
+        varchar nombre  "varchar(255); NOT NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+        timestamp deleted_at  "timestamp; NULL"
+    }
+    nivel_academico {
+        bigint id_nivel_academico PK "bigint(20) U; NOT NULL"
+        varchar nombre  "varchar(255); NOT NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+        timestamp deleted_at  "timestamp; NULL"
+    }
+    datos_academicos {
+        bigint id_dat_academico PK "bigint(20) U; NOT NULL"
+        bigint id_personal FK, UK "bigint(20) U; NOT NULL"
+        bigint id_institucion FK "bigint(20) U; NOT NULL"
+        bigint id_carrera FK "bigint(20) U; NOT NULL"
+        bigint id_nivel_academico FK "bigint(20) U; NOT NULL"
+        varchar matricula  "varchar(100); NOT NULL"
+        decimal promedio  "decimal(5,2); NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+        timestamp deleted_at  "timestamp; NULL"
+    }
+    users {
+        bigint id PK "bigint(20) U; NOT NULL"
+    }
+    adscripciones_personal {
+        bigint id_adscripcion PK "bigint(20) U; NOT NULL"
+        bigint id_personal FK "bigint(20) U; NOT NULL"
+        bigint id_unidad FK "bigint(20) U; NOT NULL"
+        date fecha_inicio  "date; NOT NULL"
+        date fecha_fin  "date; NULL"
+        text motivo_fin  "text; NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+        timestamp deleted_at  "timestamp; NULL"
+    }
+    adscripciones_asesores {
+        bigint id_adscripcion PK "bigint(20) U; NOT NULL"
+        bigint id_asesor FK "bigint(20) U; NOT NULL"
+        bigint id_unidad FK "bigint(20) U; NOT NULL"
+        date fecha_inicio  "date; NOT NULL"
+        date fecha_fin  "date; NULL"
+        text motivo_fin  "text; NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+        timestamp deleted_at  "timestamp; NULL"
+    }
+    asigna_asesores {
+        bigint id_asigna_asesor PK "bigint(20) U; NOT NULL"
+        bigint id_asesor FK "bigint(20) U; NOT NULL"
+        bigint id_personal FK "bigint(20) U; NOT NULL"
+        date fecha_asignacion  "date; NOT NULL"
+        date fecha_fin  "date; NULL"
+        text motivo_fin  "text; NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+        timestamp deleted_at  "timestamp; NULL"
+    }
+    categorias {
+        bigint id_categoria PK "bigint(20) U; NOT NULL"
+        varchar nombre  "varchar(255); NOT NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+        timestamp deleted_at  "timestamp; NULL"
+    }
+    tipos_incidencias {
+        bigint id_tipo_incidencia PK "bigint(20) U; NOT NULL"
+        bigint id_categoria FK "bigint(20) U; NOT NULL"
+        varchar nombre  "varchar(255); NOT NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+        timestamp deleted_at  "timestamp; NULL"
+    }
+    incidencias {
+        bigint id_incidencia PK "bigint(20) U; NOT NULL"
+        bigint id_personal FK "bigint(20) U; NOT NULL"
+        bigint id_tipo_incidencia FK "bigint(20) U; NOT NULL"
+        date fecha_hecho  "date; NOT NULL"
+        datetime fecha_registro  "datetime; NOT NULL"
+        varchar evidencia  "varchar(1024); NULL"
+        text descripcion  "text; NOT NULL"
+        varchar estado  "varchar(50); NOT NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+        timestamp deleted_at  "timestamp; NULL"
+    }
+    tipos_consultas {
+        bigint id_tipo_consulta PK "bigint(20) U; NOT NULL"
+        varchar nombre  "varchar(255); NOT NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+        timestamp deleted_at  "timestamp; NULL"
+    }
+    productividad {
+        bigint id_productividad PK "bigint(20) U; NOT NULL"
+        bigint id_personal FK "bigint(20) U; NOT NULL"
+        bigint id_tipo_consulta FK "bigint(20) U; NOT NULL"
+        date fecha_actividad  "date; NOT NULL"
+        datetime fecha_registro  "datetime; NOT NULL"
+        varchar evidencia  "varchar(1024); NULL"
+        text descripcion  "text; NULL"
+        int num_actividades  "int(10) U; NOT NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+        timestamp deleted_at  "timestamp; NULL"
+    }
+    tipos_documentos {
+        bigint id_tipo_documento PK "bigint(20) U; NOT NULL"
+        varchar nombre  "varchar(255); NOT NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+        timestamp deleted_at  "timestamp; NULL"
+    }
+    materiales_consultas {
+        bigint id_material PK "bigint(20) U; NOT NULL"
+        bigint id_tipo_documento FK "bigint(20) U; NOT NULL"
+        bigint id_tipo_personal FK "bigint(20) U; NOT NULL"
+        bigint id_carrera FK "bigint(20) U; NOT NULL"
+        varchar titulo  "varchar(255); NOT NULL"
+        text descripcion  "text; NULL"
+        varchar nombre_archivo  "varchar(255); NOT NULL"
+        varchar ruta_archivo  "varchar(1024); NOT NULL"
+        datetime fecha_publicacion  "datetime; NULL"
+        varchar estado  "varchar(50); NOT NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+        timestamp deleted_at  "timestamp; NULL"
+    }
+    documentos_investigacion {
+        bigint id_documento PK "bigint(20) U; NOT NULL"
+        bigint id_personal FK "bigint(20) U; NOT NULL"
+        bigint id_tipo_documento FK "bigint(20) U; NOT NULL"
+        bigint id_documento_anterior FK, UK "bigint(20) U; NULL"
+        varchar nombre_archivo  "varchar(255); NOT NULL"
+        varchar ruta_archivo  "varchar(1024); NOT NULL"
+        int version  "int(10) U; NOT NULL"
+        varchar estado  "varchar(50); NOT NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+        timestamp deleted_at  "timestamp; NULL"
+    }
+    observaciones_documentos {
+        bigint id_revision_doc PK "bigint(20) U; NOT NULL"
+        bigint id_documento FK "bigint(20) U; NOT NULL"
+        bigint user_id FK "bigint(20) U; NOT NULL"
+        bigint id_asesor FK "bigint(20) U; NULL"
+        text observacion  "text; NOT NULL"
+        datetime fecha_observacion  "datetime; NOT NULL"
+        varchar estado  "varchar(50); NOT NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+        timestamp deleted_at  "timestamp; NULL"
+    }
+    asesores ||..o{ adscripciones_asesores : "id_asesor a id_asesor"
+    unidades_medicas ||..o{ adscripciones_asesores : "id_unidad a id_unidad"
+    personal_formacion ||..o{ adscripciones_personal : "id_personal a id_personal"
+    unidades_medicas ||..o{ adscripciones_personal : "id_unidad a id_unidad"
+    personas ||..o| asesores : "id_persona a id_persona"
+    asesores ||..o{ asigna_asesores : "id_asesor a id_asesor"
+    personal_formacion ||..o{ asigna_asesores : "id_personal a id_personal"
+    carreras ||..o{ datos_academicos : "id_carrera a id_carrera"
+    instituciones ||..o{ datos_academicos : "id_institucion a id_institucion"
+    nivel_academico ||..o{ datos_academicos : "id_nivel_academico a id_nivel_academico"
+    personal_formacion ||..o| datos_academicos : "id_personal a id_personal"
+    documentos_investigacion |o..o| documentos_investigacion : "id_documento_anterior a id_documento"
+    personal_formacion ||..o{ documentos_investigacion : "id_personal a id_personal"
+    tipos_documentos ||..o{ documentos_investigacion : "id_tipo_documento a id_tipo_documento"
+    personal_formacion ||..o{ incidencias : "id_personal a id_personal"
+    tipos_incidencias ||..o{ incidencias : "id_tipo_incidencia a id_tipo_incidencia"
+    carreras ||..o{ materiales_consultas : "id_carrera a id_carrera"
+    tipos_documentos ||..o{ materiales_consultas : "id_tipo_documento a id_tipo_documento"
+    tipos_personal ||..o{ materiales_consultas : "id_tipo_personal a id_tipo_personal"
+    asesores |o..o{ observaciones_documentos : "id_asesor a id_asesor"
+    documentos_investigacion ||..o{ observaciones_documentos : "id_documento a id_documento"
+    users ||..o{ observaciones_documentos : "user_id a id"
+    personas ||..o{ personal_formacion : "id_persona a id_persona"
+    tipos_personal ||..o{ personal_formacion : "id_tipo_personal a id_tipo_personal"
+    personal_formacion ||..o{ productividad : "id_personal a id_personal"
+    tipos_consultas ||..o{ productividad : "id_tipo_consulta a id_tipo_consulta"
+    categorias ||..o{ tipos_incidencias : "id_categoria a id_categoria"

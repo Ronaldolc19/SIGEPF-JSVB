@@ -1,0 +1,139 @@
+erDiagram
+    direction LR
+    municipios {
+        bigint id_municipio PK "bigint(20) U; NOT NULL"
+        varchar nom_mun  "varchar(255); NOT NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+        timestamp deleted_at  "timestamp; NULL"
+    }
+    localidades {
+        bigint id_localidad PK "bigint(20) U; NOT NULL"
+        bigint id_municipio FK "bigint(20) U; NOT NULL"
+        varchar nom_loc  "varchar(255); NOT NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+        timestamp deleted_at  "timestamp; NULL"
+    }
+    jurisdicciones {
+        bigint id_jurisdiccion PK "bigint(20) U; NOT NULL"
+        varchar nombre  "varchar(255); NOT NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+        timestamp deleted_at  "timestamp; NULL"
+    }
+    tipo_unidades {
+        bigint id_tipo_unidad PK "bigint(20) U; NOT NULL"
+        varchar nombre  "varchar(255); NOT NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+        timestamp deleted_at  "timestamp; NULL"
+    }
+    generos {
+        bigint id_genero PK "bigint(20) U; NOT NULL"
+        varchar nombre  "varchar(255); NOT NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+        timestamp deleted_at  "timestamp; NULL"
+    }
+    nacionalidades {
+        bigint id_nacionalidad PK "bigint(20) U; NOT NULL"
+        varchar nombre  "varchar(255); NOT NULL"
+        varchar codigo_iso  "varchar(3); NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+        timestamp deleted_at  "timestamp; NULL"
+    }
+    unidades_medicas {
+        bigint id_unidad PK "bigint(20) U; NOT NULL"
+        bigint id_jurisdiccion FK "bigint(20) U; NOT NULL"
+        bigint id_localidad FK "bigint(20) U; NOT NULL"
+        bigint id_tipo_unidad FK "bigint(20) U; NOT NULL"
+        bigint id_tipologia FK "bigint(20) U; NOT NULL"
+        varchar clave_clues UK "varchar(20); NOT NULL"
+        varchar nom_unidad  "varchar(255); NOT NULL"
+        varchar domicilio  "varchar(255); NOT NULL"
+        varchar referencias  "varchar(255); NULL"
+        char cp  "char(5); NOT NULL"
+        varchar horario  "varchar(255); NOT NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+        timestamp deleted_at  "timestamp; NULL"
+    }
+    tipologias_unidades {
+        bigint id_tipologia PK "bigint(20) U; NOT NULL"
+        varchar nombre  "varchar(255); NOT NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+        timestamp deleted_at  "timestamp; NULL"
+    }
+    personas {
+        bigint id_persona PK "bigint(20) U; NOT NULL"
+        bigint id_localidad FK "bigint(20) U; NULL"
+        bigint id_genero FK "bigint(20) U; NULL"
+        bigint id_nacionalidad FK "bigint(20) U; NULL"
+        varchar nombre  "varchar(255); NOT NULL"
+        varchar ap  "varchar(255); NOT NULL"
+        varchar am  "varchar(255); NULL"
+        date fecha_nacimiento  "date; NULL"
+        varchar curp UK "varchar(18); NULL"
+        varchar rfc  "varchar(13); NULL"
+        varchar desc_domicilio  "varchar(255); NULL"
+        varchar correo  "varchar(255); NULL"
+        varchar telefono  "varchar(20); NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+        timestamp deleted_at  "timestamp; NULL"
+    }
+    users {
+        bigint id PK "bigint(20) U; NOT NULL"
+        varchar name  "varchar(255); NOT NULL"
+        varchar email UK "varchar(255); NOT NULL"
+        timestamp email_verified_at  "timestamp; NULL"
+        varchar password  "varchar(255); NOT NULL"
+        varchar remember_token  "varchar(100); NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+        bigint id_persona FK, UK "bigint(20) U; NULL"
+    }
+    roles {
+        bigint id PK "bigint(20) U; NOT NULL"
+        varchar codigo UK "varchar(50); NOT NULL"
+        varchar nombre  "varchar(100); NOT NULL"
+        text descripcion  "text; NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+    }
+    permisos {
+        bigint id PK "bigint(20) U; NOT NULL"
+        varchar codigo UK "varchar(100); NOT NULL"
+        varchar nombre  "varchar(150); NOT NULL"
+        text descripcion  "text; NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+    }
+    usuario_rol {
+        bigint user_id PK, FK "bigint(20) U; NOT NULL"
+        bigint rol_id PK, FK "bigint(20) U; NOT NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+    }
+    rol_permiso {
+        bigint rol_id PK, FK "bigint(20) U; NOT NULL"
+        bigint permiso_id PK, FK "bigint(20) U; NOT NULL"
+        timestamp created_at  "timestamp; NULL"
+        timestamp updated_at  "timestamp; NULL"
+    }
+    municipios ||..o{ localidades : "id_municipio a id_municipio"
+    generos |o..o{ personas : "id_genero a id_genero"
+    localidades |o..o{ personas : "id_localidad a id_localidad"
+    nacionalidades |o..o{ personas : "id_nacionalidad a id_nacionalidad"
+    permisos ||--o{ rol_permiso : "permiso_id a id"
+    roles ||--o{ rol_permiso : "rol_id a id"
+    jurisdicciones ||..o{ unidades_medicas : "id_jurisdiccion a id_jurisdiccion"
+    localidades ||..o{ unidades_medicas : "id_localidad a id_localidad"
+    tipologias_unidades ||..o{ unidades_medicas : "id_tipologia a id_tipologia"
+    tipo_unidades ||..o{ unidades_medicas : "id_tipo_unidad a id_tipo_unidad"
+    personas |o..o| users : "id_persona a id_persona"
+    roles ||--o{ usuario_rol : "rol_id a id"
+    users ||--o{ usuario_rol : "user_id a id"
