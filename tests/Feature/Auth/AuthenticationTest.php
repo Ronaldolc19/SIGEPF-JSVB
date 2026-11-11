@@ -18,6 +18,21 @@ test('login screen can be rendered', function () {
     $response->assertStatus(200);
 });
 
+test('login generates secure links behind the hosting proxy', function () {
+    $this->withServerVariables(['REMOTE_ADDR' => '10.0.0.10'])
+        ->withHeaders(['X-Forwarded-Proto' => 'https', 'X-Forwarded-Port' => '443'])
+        ->get('http://sigepf.example.test/login')
+        ->assertOk()
+        ->assertSee('https://sigepf.example.test', false)
+        ->assertDontSee('http://sigepf.example.test', false);
+});
+
+test('login remains accessible over local http without a proxy', function () {
+    $this->get('http://localhost/login')
+        ->assertOk()
+        ->assertSee('http://localhost', false);
+});
+
 test('users can authenticate using the login screen', function () {
     $user = User::factory()->create();
 
