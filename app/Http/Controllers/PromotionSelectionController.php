@@ -12,7 +12,7 @@ class PromotionSelectionController extends Controller
     public function update(Request $request): RedirectResponse
     {
         abort_unless($request->user()->hasRole('administrador') || $request->user()->hasRole('pasante'), 403);
-        $destinations = ['personal.index' => 'personal.ver', 'expedientes.index' => 'expedientes.ver', 'incidencias.index' => 'incidencias.ver'];
+        $destinations = ['academico.index' => 'academico.ver', 'correspondencia.index' => 'correspondencia.ver', 'personal.index' => 'personal.ver', 'expedientes.index' => 'expedientes.ver', 'incidencias.index' => 'incidencias.ver', 'productividad.index' => 'productividad.ver', 'productividad.programacion.index' => 'panel.administrador'];
         $data = $request->validate([
             'promocion' => ['required', Rule::in(Promociones::selections($request))],
             'destino' => ['nullable', Rule::in(array_keys($destinations))],

@@ -9,6 +9,9 @@ import { ArrowRight, ClipboardList, UserPlus, Users } from 'lucide-react';
 import { useState } from 'react';
 
 const moduleRoutes: Record<string, string> = {
+    productividad: 'productividad.index',
+    academico: 'academico.index',
+    correspondencia: 'correspondencia.index',
     promociones: 'promociones.index',
     consulta: 'consulta.index',
     incidencias: 'incidencias.index',

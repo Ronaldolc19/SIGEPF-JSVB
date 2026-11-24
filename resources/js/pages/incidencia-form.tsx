@@ -1,16 +1,16 @@
+import IncidenciaPersonalSelector from '@/components/incidencia-personal-selector';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { personName, type Participation } from './expedientes';
+import { type Participation } from './expedientes';
 
 export default function IncidenciaForm({
     personal,
     tipos,
     initial,
     incidenciaId,
-    buscar,
 }: {
     personal: Participation[];
     tipos: { id_tipo_incidencia: number; nombre: string; categoria: string }[];
@@ -26,7 +26,6 @@ export default function IncidenciaForm({
         descripcion: String(initial.descripcion ?? ''),
         revision: Number(initial.revision ?? 0),
     });
-    const search = useForm({ buscar });
     return (
         <AppLayout
             breadcrumbs={[
@@ -37,27 +36,6 @@ export default function IncidenciaForm({
             <Head title="Registrar incidencia" />
             <div className="mx-auto w-full max-w-3xl space-y-6 p-5 md:p-8">
                 <h1 className="text-2xl font-semibold">{incidenciaId ? 'Corregir incidencia registrada' : 'Registrar incidencia'}</h1>
-                {!incidenciaId && (
-                    <form
-                        className="space-y-2 rounded-lg border p-4"
-                        onSubmit={(event) => {
-                            event.preventDefault();
-                            search.get(route('incidencias.create'), { preserveState: true });
-                        }}
-                    >
-                        <label htmlFor="buscar-personal" className="text-sm">
-                            Localizar pasante (hasta 30 coincidencias)
-                        </label>
-                        <div className="flex gap-3">
-                            <Input
-                                id="buscar-personal"
-                                value={search.data.buscar}
-                                onChange={(event) => search.setData('buscar', event.target.value)}
-                            />
-                            <Button variant="outline">Buscar</Button>
-                        </div>
-                    </form>
-                )}
                 <form
                     className="space-y-5"
                     onSubmit={(event) => {
@@ -67,21 +45,14 @@ export default function IncidenciaForm({
                     }}
                 >
                     <div>
-                        <label htmlFor="personal">Pasante y participación *</label>
-                        <select
-                            id="personal"
-                            className="bg-background mt-2 w-full rounded-md border p-3"
-                            disabled={!!incidenciaId}
+                        <label htmlFor="personal">Pasante *</label>
+                        <IncidenciaPersonalSelector
+                            personal={personal}
                             value={form.data.id_personal}
-                            onChange={(event) => form.setData('id_personal', event.target.value)}
-                        >
-                            <option value="">Seleccionar</option>
-                            {personal.map((person) => (
-                                <option key={person.id_personal} value={person.id_personal}>
-                                    {personName(person)} · Participación #{person.id_personal}
-                                </option>
-                            ))}
-                        </select>
+                            onChange={(value) => form.setData('id_personal', value)}
+                            disabled={!!incidenciaId}
+                            invalid={!!form.errors.id_personal}
+                        />
                         <InputError message={form.errors.id_personal} />
                     </div>
                     <div>

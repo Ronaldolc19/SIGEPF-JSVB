@@ -38,19 +38,28 @@ class ExpedienteController extends Controller
         $query = $this->visible($request->user())->with('persona:id_persona,nombre,ap,am');
         Promociones::filter($request, $query);
         if (! empty($filters['buscar'])) {
-            $query->whereHas('persona', fn (Builder $person): Builder => $person->where(function (Builder $names) use ($filters): void {
-                foreach (['nombre', 'ap', 'am'] as $column) {
-                    $names->orWhere($column, 'like', '%'.$filters['buscar'].'%');
+            $terms = preg_split('/\s+/u', trim($filters['buscar']), -1, PREG_SPLIT_NO_EMPTY);
+            $query->whereHas('persona', function (Builder $person) use ($terms): void {
+                foreach ($terms as $term) {
+                    $person->where(function (Builder $names) use ($term): void {
+                        foreach (['nombre', 'ap', 'am'] as $column) {
+                            $names->orWhere($column, 'like', '%'.$term.'%');
+                        }
+                    });
                 }
-            }));
+            });
         }
+        foreach (['ap', 'am', 'nombre'] as $column) {
+            $query->orderBy(DB::table('personas')->select($column)->whereColumn('personas.id_persona', 'personal_formacion.id_persona'));
+        }
+        $query->orderByDesc('fecha_ingreso')->orderBy('id_personal');
         $query->addSelect(['entregados' => DB::table('documentos_expediente as d')->selectRaw('COUNT(*)')
             ->whereColumn('d.id_personal', 'personal_formacion.id_personal')
             ->whereExists(fn (QueryBuilder $files): QueryBuilder => $files->selectRaw('1')->from('archivos_expediente as a')
                 ->whereColumn('a.id_documento_expediente', 'd.id_documento_expediente')->whereNull('a.deleted_at'))]);
 
         return Inertia::render('expedientes', [
-            'participaciones' => $query->orderByDesc('id_personal')->paginate(15)->withQueryString(),
+            'participaciones' => $query->paginate(15)->withQueryString(),
             'buscar' => $filters['buscar'] ?? '', 'isAdmin' => $request->user()->hasRole('administrador'),
         ]);
     }

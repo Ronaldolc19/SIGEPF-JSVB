@@ -186,6 +186,6 @@ test('catalog overview includes adscription catalogs and counts only active reco
     DB::table('municipios')->insert(['nom_mun' => 'Activo']);
     DB::table('municipios')->insert(['nom_mun' => 'Eliminado', 'deleted_at' => now()]);
     $this->actingAs(catalogAdmin())->get(route('catalogos.index'))->assertOk()
-        ->assertInertia(fn (Assert $page) => $page->component('catalogos')->has('catalogos', 22)
+        ->assertInertia(fn (Assert $page) => $page->component('catalogos')->has('catalogos', 25)
             ->where('catalogos', fn ($catalogs) => collect($catalogs)->firstWhere('slug', 'municipios')['count'] === 1));
 });

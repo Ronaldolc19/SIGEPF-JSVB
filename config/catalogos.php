@@ -1,6 +1,21 @@
 <?php
 
 return [
+    'tipos_correspondencia' => [
+        'title' => 'Tipos de correspondencia', 'group' => 'Seguimiento', 'key' => 'id_tipo_correspondencia', 'label' => 'nombre',
+        'fields' => ['nombre' => ['label' => 'Nombre', 'required' => true, 'max' => 150, 'unique' => true]],
+        'dependents' => [['correspondencia', 'id_tipo_correspondencia']],
+    ],
+    'categorias_productividad' => [
+        'title' => 'Categorías de productividad', 'group' => 'Seguimiento', 'key' => 'id_categoria_productividad', 'label' => 'nombre',
+        'fields' => ['nombre' => ['label' => 'Nombre', 'required' => true, 'max' => 150, 'unique' => true]],
+        'dependents' => [['programacion_productividad', 'id_categoria_productividad']],
+    ],
+    'unidades_medida_productividad' => [
+        'title' => 'Unidades de medida de productividad', 'group' => 'Seguimiento', 'key' => 'id_unidad_medida', 'label' => 'nombre',
+        'fields' => ['nombre' => ['label' => 'Nombre', 'required' => true, 'max' => 150, 'unique' => true]],
+        'dependents' => [['programacion_productividad', 'id_unidad_medida']],
+    ],
     'entidades_federativas' => [
         'title' => 'Entidades federativas', 'group' => 'Geografía', 'key' => 'id_entidad_federativa', 'label' => 'nombre',
         'fields' => [
@@ -96,7 +111,7 @@ return [
             'cp' => ['label' => 'Código postal', 'required' => true, 'max' => 5, 'pattern' => '^[0-9]{5}$'],
             'horario' => ['label' => 'Horario', 'required' => true, 'max' => 255],
         ],
-        'dependents' => [['adscripciones_asesores', 'id_unidad'], ['adscripciones_personal', 'id_unidad']],
+        'dependents' => [['adscripciones_asesores', 'id_unidad'], ['adscripciones_personal', 'id_unidad'], ['programacion_productividad', 'id_unidad']],
     ],
     'generos' => [
         'title' => 'Géneros', 'group' => 'Personas', 'key' => 'id_genero', 'label' => 'nombre',
@@ -133,7 +148,7 @@ return [
         'fields' => [
             'nombre' => ['label' => 'Nombre', 'required' => true, 'max' => 255],
         ],
-        'dependents' => [['datos_academicos', 'id_carrera'], ['materiales_consultas', 'id_carrera']],
+        'dependents' => [['datos_academicos', 'id_carrera'], ['materiales_consultas', 'id_carrera'], ['tipos_consultas', 'id_carrera'], ['programacion_productividad', 'id_carrera']],
     ],
     'nivel_academico' => [
         'title' => 'Niveles académicos', 'group' => 'Formación académica', 'key' => 'id_nivel_academico', 'label' => 'nombre',
@@ -158,11 +173,12 @@ return [
         'dependents' => [['incidencias', 'id_tipo_incidencia']],
     ],
     'tipos_consultas' => [
-        'title' => 'Tipos de consultas', 'group' => 'Seguimiento', 'key' => 'id_tipo_consulta', 'label' => 'nombre',
+        'title' => 'Actividades de productividad', 'group' => 'Seguimiento', 'key' => 'id_tipo_consulta', 'label' => 'nombre',
         'fields' => [
             'nombre' => ['label' => 'Nombre', 'required' => true, 'max' => 255],
+            'id_carrera' => ['label' => 'Carrera (vacío: actividad común)', 'required' => false, 'reference' => 'carreras'],
         ],
-        'dependents' => [['productividad', 'id_tipo_consulta']],
+        'dependents' => [['productividad', 'id_tipo_consulta'], ['programacion_productividad', 'id_tipo_consulta']],
     ],
     'tipos_documentos' => [
         'title' => 'Tipos de documentos', 'group' => 'Seguimiento', 'key' => 'id_tipo_documento', 'label' => 'nombre',

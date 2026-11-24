@@ -28,7 +28,17 @@ export function PromotionCalendar() {
     const form = useForm({ promocion: '', destino: 'personal.index' });
     if (!calendar) return null;
     const currentRoute = route().current() ?? '';
-    const destination = ['personal.index', 'expedientes.index', 'incidencias.index'].includes(currentRoute) ? currentRoute : 'personal.index';
+    const destination = [
+        'personal.index',
+        'expedientes.index',
+        'incidencias.index',
+        'productividad.index',
+        'academico.index',
+        'correspondencia.index',
+        'productividad.programacion.index',
+    ].includes(currentRoute)
+        ? currentRoute
+        : 'personal.index';
     const select = (value: string) => {
         form.transform(() => ({ promocion: value, destino: destination }));
         form.post(route('promociones.select'), { onSuccess: () => setOpen(false) });
@@ -78,7 +88,7 @@ export function PromotionCalendar() {
                     <DialogTitle>{calendar.isAdmin ? 'Selecciona una promoción' : 'Mi promoción de servicio'}</DialogTitle>
                     <DialogDescription>
                         {calendar.isAdmin
-                            ? 'El periodo seleccionado se aplicará al navegar por personal, expedientes e incidencias.'
+                            ? 'El periodo seleccionado se aplicará al navegar por personal, expedientes, incidencias, productividad, correspondencia y repositorio académico.'
                             : `${auth.user.name}, aquí puedes consultar la promoción y las fechas de tus participaciones.`}
                     </DialogDescription>
                 </DialogHeader>

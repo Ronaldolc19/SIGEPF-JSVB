@@ -10,7 +10,7 @@ export type Participation = {
     fecha_termino: string | null;
     entregados?: number;
 };
-export const personName = (personal: Participation) => [personal.persona.nombre, personal.persona.ap, personal.persona.am].filter(Boolean).join(' ');
+export const personName = (personal: Participation) => [personal.persona.ap, personal.persona.am, personal.persona.nombre].filter(Boolean).join(' ');
 export default function Expedientes({
     participaciones,
     buscar,
@@ -30,7 +30,7 @@ export default function Expedientes({
                     <p className="text-muted-foreground mt-2">
                         {isAdmin
                             ? 'Consulta las entregas de los pasantes y registra observaciones.'
-                            : 'Selecciona tu participación para subir documentos y consultar el estado de tus entregas.'}
+                            : 'Selecciona tu expediente para subir documentos y consultar el estado de tus entregas.'}
                     </p>
                 </header>
                 {isAdmin && (
@@ -54,9 +54,10 @@ export default function Expedientes({
                         <Button disabled={form.processing}>Buscar</Button>
                     </form>
                 )}
+                {isAdmin && <p className="text-muted-foreground text-sm">Orden alfabético por apellido paterno, apellido materno y nombre.</p>}
                 {!participaciones.data.length && (
                     <div role="status" className="rounded-xl border p-6">
-                        <h2 className="font-semibold">No hay participaciones disponibles</h2>
+                        <h2 className="font-semibold">No hay expedientes disponibles</h2>
                         <p className="text-muted-foreground mt-2">
                             {isAdmin
                                 ? 'Registra al personal en formación o cambia la búsqueda.'
@@ -69,7 +70,7 @@ export default function Expedientes({
                         <article key={personal.id_personal} className="bg-card space-y-4 rounded-xl border p-5">
                             <h2 className="font-semibold">{personName(personal)}</h2>
                             <p className="text-muted-foreground text-sm">
-                                Participación #{personal.id_personal} · {personal.fecha_ingreso?.slice(0, 10) ?? 'Sin inicio'} —{' '}
+                                Periodo de servicio: {personal.fecha_ingreso?.slice(0, 10) ?? 'Sin inicio'} —{' '}
                                 {personal.fecha_termino?.slice(0, 10) ?? 'Sin término'}
                             </p>
                             <p>

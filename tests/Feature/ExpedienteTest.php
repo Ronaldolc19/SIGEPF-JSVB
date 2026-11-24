@@ -13,6 +13,29 @@ beforeEach(function () {
     $this->withoutVite();
 });
 
+test('expedientes are ordered by both surnames and name before pagination', function () {
+    $expected = [];
+    foreach ([['Alvarez', 'Garcia', 'Ana'], ['Alvarez', 'Garcia', 'Zoe'], ['Alvarez', 'Lopez', 'Ana'], ['Zarate', 'Garcia', 'Ana']] as [$ap, $am, $nombre]) {
+        $personal = PersonalFormacion::factory()->create();
+        $personal->persona->update(compact('ap', 'am', 'nombre'));
+        $expected[] = $personal->id_personal;
+    }
+    $this->actingAs(expedienteUser('administrador'))->get(route('expedientes.index'))
+        ->assertInertia(fn (Assert $page) => $page->where('participaciones.data', fn ($rows): bool => collect($rows)->pluck('id_personal')->all() === $expected));
+});
+
+test('expediente search matches words across names and surnames without exposing other students', function () {
+    $personal = PersonalFormacion::factory()->create();
+    $personal->persona->update(['nombre' => 'Paola Andrea', 'ap' => 'Hernandez', 'am' => 'Gomez']);
+    $other = PersonalFormacion::factory()->create();
+    $other->persona->update(['nombre' => 'Carlos', 'ap' => 'Hernandez', 'am' => 'Sanchez']);
+    $this->actingAs(expedienteUser('administrador'));
+    foreach (['Hernandez Gomez', '  Paola   Hernandez ', 'Gomez Paola'] as $buscar) {
+        $this->get(route('expedientes.index', ['buscar' => $buscar]))->assertInertia(fn (Assert $page) => $page->has('participaciones.data', 1)->where('participaciones.data.0.id_personal', $personal->id_personal));
+    }
+    $this->actingAs(expedienteUser('pasante', $other))->get(route('expedientes.index', ['buscar' => 'Paola Hernandez']))->assertInertia(fn (Assert $page) => $page->has('participaciones.data', 0));
+});
+
 function expedienteUser(string $role, ?PersonalFormacion $personal = null): User
 {
     $rol = Rol::firstOrCreate(['codigo' => $role], ['nombre' => ucfirst($role)]);

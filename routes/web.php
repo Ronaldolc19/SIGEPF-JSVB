@@ -1,15 +1,19 @@
 <?php
 
+use App\Http\Controllers\AcademicoController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AdscripcionPersonalController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CatalogoController;
+use App\Http\Controllers\CorrespondenciaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExpedienteController;
 use App\Http\Controllers\IncidenciaController;
 use App\Http\Controllers\MaterialConsultaController;
 use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\PersonalFormacionController;
+use App\Http\Controllers\ProductividadController;
+use App\Http\Controllers\ProgramacionProductividadController;
 use App\Http\Controllers\PromocionController;
 use App\Http\Controllers\PromotionSelectionController;
 use App\Http\Controllers\RegistroPersonalController;
@@ -21,6 +25,51 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [AuthenticatedSessionController::class, 'create'])->middleware('guest')->name('home');
 
 Route::middleware(['auth'])->group(function () {
+    Route::middleware('can:academico.ver')->group(function () {
+        Route::get('academico', [AcademicoController::class, 'index'])->name('academico.index');
+        Route::get('academico/entregar', [AcademicoController::class, 'form'])->middleware('can:academico.registrar')->name('academico.create');
+        Route::post('academico', [AcademicoController::class, 'store'])->middleware('can:academico.registrar')->name('academico.store');
+        Route::get('academico/{id_documento}', [AcademicoController::class, 'show'])->whereNumber('id_documento')->name('academico.show');
+        Route::get('academico/{id_documento}/archivo', [AcademicoController::class, 'download'])->whereNumber('id_documento')->name('academico.download');
+        Route::post('academico/{id_documento}/revision', [AcademicoController::class, 'review'])->whereNumber('id_documento')->middleware('can:academico.revisar')->name('academico.review');
+    });
+    Route::middleware('can:correspondencia.ver')->prefix('correspondencia')->name('correspondencia.')->group(function () {
+        Route::get('/', [CorrespondenciaController::class, 'index'])->name('index');
+        Route::middleware('can:panel.administrador')->group(function () {
+            Route::get('crear', [CorrespondenciaController::class, 'form'])->middleware('can:correspondencia.registrar')->name('create');
+            Route::post('/', [CorrespondenciaController::class, 'save'])->middleware('can:correspondencia.registrar')->name('store');
+            Route::get('{id_correspondencia}/editar', [CorrespondenciaController::class, 'form'])->whereNumber('id_correspondencia')->middleware('can:correspondencia.editar')->name('edit');
+            Route::put('{id_correspondencia}', [CorrespondenciaController::class, 'save'])->whereNumber('id_correspondencia')->middleware('can:correspondencia.editar')->name('update');
+            Route::post('{id_correspondencia}/publicar', [CorrespondenciaController::class, 'publish'])->whereNumber('id_correspondencia')->middleware('can:correspondencia.editar')->name('publish');
+            Route::post('{id_correspondencia}/seguimiento', [CorrespondenciaController::class, 'transition'])->whereNumber('id_correspondencia')->middleware('can:correspondencia.editar')->name('transition');
+            Route::post('{id_correspondencia}/respuestas/{id_respuesta}/revision', [CorrespondenciaController::class, 'review'])->whereNumber(['id_correspondencia', 'id_respuesta'])->middleware('can:correspondencia.editar')->name('review');
+            Route::delete('{id_correspondencia}', [CorrespondenciaController::class, 'destroy'])->whereNumber('id_correspondencia')->middleware('can:correspondencia.eliminar')->name('destroy');
+        });
+        Route::get('{id_correspondencia}', [CorrespondenciaController::class, 'show'])->whereNumber('id_correspondencia')->name('show');
+        Route::post('{id_correspondencia}/destinatarios/{id_destinatario}/confirmar', [CorrespondenciaController::class, 'acknowledge'])->whereNumber(['id_correspondencia', 'id_destinatario'])->middleware('can:correspondencia.registrar')->name('acknowledge');
+        Route::post('{id_correspondencia}/respuestas', [CorrespondenciaController::class, 'respond'])->whereNumber('id_correspondencia')->middleware('can:correspondencia.registrar')->name('respond');
+        Route::get('{id_correspondencia}/archivos/{id_archivo}', [CorrespondenciaController::class, 'download'])->whereNumber(['id_correspondencia', 'id_archivo'])->name('download');
+        Route::get('{id_correspondencia}/respuestas/{id_respuesta}/archivo', [CorrespondenciaController::class, 'downloadResponse'])->whereNumber(['id_correspondencia', 'id_respuesta'])->name('downloadResponse');
+    });
+    Route::middleware('can:productividad.ver')->group(function () {
+        Route::middleware(['can:panel.administrador', 'can:productividad.editar'])->group(function () {
+            Route::get('productividad/programacion', [ProgramacionProductividadController::class, 'index'])->name('productividad.programacion.index');
+            Route::get('productividad/programacion/crear', [ProgramacionProductividadController::class, 'form'])->name('productividad.programacion.create');
+            Route::post('productividad/programacion', [ProgramacionProductividadController::class, 'save'])->name('productividad.programacion.store');
+            Route::get('productividad/programacion/{id_programacion}/editar', [ProgramacionProductividadController::class, 'form'])->whereNumber('id_programacion')->name('productividad.programacion.edit');
+            Route::put('productividad/programacion/{id_programacion}', [ProgramacionProductividadController::class, 'save'])->whereNumber('id_programacion')->name('productividad.programacion.update');
+            Route::post('productividad/programacion/{id_programacion}/estado', [ProgramacionProductividadController::class, 'toggle'])->whereNumber('id_programacion')->name('productividad.programacion.toggle');
+            Route::post('productividad/programacion/{id_programacion}/meta', [ProgramacionProductividadController::class, 'goal'])->whereNumber('id_programacion')->name('productividad.programacion.goal');
+        });
+        Route::get('productividad/personal/{id_personal}/resumen', [ProductividadController::class, 'report'])->whereNumber('id_personal')->name('productividad.report');
+        Route::get('productividad', [ProductividadController::class, 'index'])->name('productividad.index');
+        Route::get('productividad/crear', [ProductividadController::class, 'form'])->middleware('can:productividad.registrar')->name('productividad.create');
+        Route::post('productividad', [ProductividadController::class, 'save'])->middleware('can:productividad.registrar')->name('productividad.store');
+        Route::get('productividad/{id_productividad}/editar', [ProductividadController::class, 'form'])->whereNumber('id_productividad')->middleware('can:productividad.editar')->name('productividad.edit');
+        Route::put('productividad/{id_productividad}', [ProductividadController::class, 'save'])->whereNumber('id_productividad')->middleware('can:productividad.editar')->name('productividad.update');
+        Route::post('productividad/{id_productividad}/revision', [ProductividadController::class, 'review'])->whereNumber('id_productividad')->middleware('can:productividad.revisar')->name('productividad.review');
+        Route::delete('productividad/{id_productividad}', [ProductividadController::class, 'destroy'])->whereNumber('id_productividad')->middleware('can:productividad.eliminar')->name('productividad.destroy');
+    });
     Route::post('promocion-seleccionada', [PromotionSelectionController::class, 'update'])->name('promociones.select');
     Route::middleware('can:consulta.ver')->group(function () {
         Route::get('consulta', [MaterialConsultaController::class, 'index'])->name('consulta.index');

@@ -11,10 +11,13 @@ return [
         'asesor' => [
             'personal' => ['ver'],
             'incidencias' => ['ver', 'registrar', 'editar', 'revisar'],
-            'productividad' => ['ver', 'registrar', 'editar'],
+            'productividad' => ['ver', 'revisar'],
             'academico' => ['ver', 'revisar'],
         ],
         'pasante' => [
+            'academico' => ['ver', 'registrar'],
+            'correspondencia' => ['ver', 'registrar'],
+            'productividad' => ['ver', 'registrar', 'editar', 'eliminar'],
             'incidencias' => ['ver'],
             'expedientes' => ['ver', 'registrar', 'eliminar'],
             'personal' => ['ver'],

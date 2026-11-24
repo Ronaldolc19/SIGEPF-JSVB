@@ -22,6 +22,15 @@ export function AppSidebar() {
               { title: 'Catálogos', url: route('catalogos.index'), icon: Settings2 },
           ]
         : [];
+    if (isAdmin || auth.modulesByRole.pasante?.includes('academico') || auth.modulesByRole.asesor?.includes('academico')) {
+        managementItems.push({ title: 'Repositorio académico', url: route('academico.index'), icon: FolderOpen });
+    }
+    if (isAdmin || auth.modulesByRole.pasante?.includes('correspondencia')) {
+        managementItems.push({ title: 'Correspondencia institucional', url: route('correspondencia.index'), icon: FolderOpen });
+    }
+    if (isAdmin || auth.modulesByRole.pasante?.includes('productividad') || auth.modulesByRole.asesor?.includes('productividad')) {
+        managementItems.push({ title: 'Productividad semanal', url: route('productividad.index'), icon: FolderOpen });
+    }
     if (auth.canViewPersonal)
         managementItems.unshift({
             title: isAdmin ? 'Personal en formación' : 'Mis participaciones y asignaciones',

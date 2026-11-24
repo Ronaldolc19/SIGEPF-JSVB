@@ -113,6 +113,9 @@ class PromocionController extends Controller
                     }
                 }
                 $values = array_intersect_key($data, array_flip(['nombre', 'fecha_inicio', 'fecha_fin', 'estado', 'permite_inscripciones']));
+                if ($id && DB::table('programacion_productividad')->where('id_promocion', $id)->whereNotIn('id_carrera', $data['carreras'])->exists()) {
+                    throw ValidationException::withMessages(['carreras' => 'No puedes quitar una carrera que tiene actividades programadas.']);
+                }
                 $values['permite_inscripciones'] = $data['estado'] === 'Cerrada' ? false : $data['permite_inscripciones'];
                 $values['updated_at'] = now();
                 $values['revision'] = ($row?->revision ?? 0) + 1;

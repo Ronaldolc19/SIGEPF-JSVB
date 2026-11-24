@@ -31,8 +31,9 @@ test('module assignment persists only the actions allowed to the role', function
         expect(Gate::forUser($user)->allows('consulta.publicar'))->toBeFalse();
     }
 })->with([
-    ['asesor', ['personal', 'incidencias', 'productividad', 'academico'], ['personal.ver', 'incidencias.ver', 'incidencias.registrar', 'incidencias.editar', 'incidencias.revisar', 'productividad.ver', 'productividad.registrar', 'productividad.editar', 'academico.ver', 'academico.revisar']],
+    ['asesor', ['personal', 'incidencias', 'productividad', 'academico'], ['personal.ver', 'incidencias.ver', 'incidencias.registrar', 'incidencias.editar', 'incidencias.revisar', 'productividad.ver', 'productividad.revisar', 'academico.ver', 'academico.revisar']],
     ['pasante', ['personal', 'consulta'], ['personal.ver', 'consulta.ver']],
+    ['pasante', ['academico'], ['academico.ver', 'academico.registrar']],
 ]);
 
 test('disabled modules disappear from navigation data and direct urls are forbidden after revocation', function () {
@@ -61,7 +62,7 @@ test('invalid module requests preserve the previous assignment', function (array
     [['modulos' => 'personal'], 'modulos'],
     [['modulos' => ['personal', 'personal']], 'modulos.0'],
     [['modulos' => ['inventado']], 'modulos.0'],
-    [['modulos' => ['academico']], 'modulos.0'],
+    [['modulos' => ['acceso']], 'modulos.0'],
     [['modulos' => ['catalogos']], 'modulos.0'],
     [['modulos' => ['personal'], 'permisos' => ['personal.eliminar']], 'permisos'],
 ]);

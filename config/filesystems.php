@@ -29,6 +29,12 @@ return [
     */
 
     'disks' => [
+        'academico' => [
+            'driver' => 'local', 'root' => storage_path('app/private/academico'), 'visibility' => 'private', 'throw' => true,
+        ],
+        'correspondencia' => [
+            'driver' => 'local', 'root' => storage_path('app/private/correspondencia'), 'visibility' => 'private', 'throw' => true,
+        ],
         'consulta' => [
             'driver' => 'local', 'root' => storage_path('app/private/consulta'), 'visibility' => 'private', 'throw' => true,
         ],

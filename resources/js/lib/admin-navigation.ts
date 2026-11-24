@@ -11,6 +11,30 @@ export interface AdminModule {
 
 export const adminModules: AdminModule[] = [
     {
+        id: 'academico',
+        title: 'Repositorio académico',
+        description: 'Supervisa las entregas, versiones y revisiones de trabajos académicos.',
+        icon: FolderOpen,
+        group: 'Gestión y seguimiento',
+        screens: ['Entregas', 'Revisión y correcciones', 'Historial de versiones'],
+    },
+    {
+        id: 'correspondencia',
+        title: 'Correspondencia institucional',
+        description: 'Registra documentos, confirma entregas y da seguimiento a las respuestas.',
+        icon: FolderOpen,
+        group: 'Gestión y seguimiento',
+        screens: ['Entrada y salida', 'Destinatarios y acuses', 'Respuestas y seguimiento'],
+    },
+    {
+        id: 'productividad',
+        title: 'Productividad semanal',
+        description: 'Consulta y revisa las actividades realizadas por carrera y semana.',
+        icon: FolderOpen,
+        group: 'Gestión y seguimiento',
+        screens: ['Registro por actividad', 'Resumen semanal', 'Revisión y correcciones'],
+    },
+    {
         id: 'promociones',
         title: 'Promociones',
         description: 'Organiza generaciones, carreras y periodos; conserva el historial de cada pasante.',

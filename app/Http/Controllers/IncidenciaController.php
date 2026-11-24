@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Promociones;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -76,19 +77,31 @@ class IncidenciaController extends Controller
         ]);
     }
 
-    public function create(Request $request): Response
+    public function create(Request $request): Response|JsonResponse
     {
         $filters = $request->validate(['buscar' => ['nullable', 'string', 'max:100'], 'personal' => ['nullable', 'integer']]);
         $query = $this->people($request->user(), true)->with('persona:id_persona,nombre,ap,am');
         if (! empty($filters['buscar'])) {
-            $query->whereHas('persona', fn (EloquentBuilder $person): EloquentBuilder => $person->where(function (EloquentBuilder $names) use ($filters): void {
-                foreach (['nombre', 'ap', 'am'] as $column) {
-                    $names->orWhere($column, 'like', '%'.$filters['buscar'].'%');
+            $terms = preg_split('/\s+/u', trim($filters['buscar']), -1, PREG_SPLIT_NO_EMPTY);
+            $query->whereHas('persona', function (EloquentBuilder $person) use ($terms): void {
+                foreach ($terms as $term) {
+                    $person->where(function (EloquentBuilder $names) use ($term): void {
+                        foreach (['nombre', 'ap', 'am'] as $column) {
+                            $names->orWhere($column, 'like', '%'.$term.'%');
+                        }
+                    });
                 }
-            }));
+            });
+        }
+        foreach (['ap', 'am', 'nombre'] as $column) {
+            $query->orderBy(DB::table('personas')->select($column)->whereColumn('personas.id_persona', 'personal_formacion.id_persona'));
+        }
+        if ($request->expectsJson()) {
+            return response()->json(['personal' => $query->orderByDesc('fecha_ingreso')->orderBy('id_personal')->limit(30)
+                ->get(['id_personal', 'id_persona', 'fecha_ingreso', 'fecha_termino'])]);
         }
         $selected = ! empty($filters['personal']) ? $this->people($request->user(), true)->with('persona:id_persona,nombre,ap,am')->findOrFail($filters['personal']) : null;
-        $people = $query->orderByDesc('id_personal')->limit(30)->get();
+        $people = $query->orderByDesc('fecha_ingreso')->orderBy('id_personal')->limit(30)->get();
         if ($selected && ! $people->contains('id_personal', $selected->id_personal)) {
             $people->prepend($selected);
         }

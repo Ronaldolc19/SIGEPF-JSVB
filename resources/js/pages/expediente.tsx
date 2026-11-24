@@ -24,7 +24,7 @@ export default function Expediente({ personal, documentos, canUpload, canDelete,
                     <h1 className="text-2xl font-semibold">Expediente digital</h1>
                     <p className="font-medium">{personName(personal)}</p>
                     <p className="text-muted-foreground text-sm">
-                        Participación #{personal.id_personal} · {personal.fecha_ingreso?.slice(0, 10)} —{' '}
+                        Periodo de servicio: {personal.fecha_ingreso?.slice(0, 10) ?? 'Sin inicio'} —{' '}
                         {personal.fecha_termino?.slice(0, 10) ?? 'Sin término'}
                     </p>
                 </header>

@@ -15,6 +15,26 @@ beforeEach(function () {
     $this->withoutVite();
 });
 
+test('incidence selector searches full names alphabetically and limits results', function () {
+    $last = PersonalFormacion::factory()->create();
+    $last->persona->update(['nombre' => 'Ana', 'ap' => 'Zarate', 'am' => 'Gomez']);
+    $first = PersonalFormacion::factory()->create();
+    $first->persona->update(['nombre' => 'Paola Andrea', 'ap' => 'Hernandez', 'am' => 'Gomez']);
+    $this->actingAs(incidenceAccount('administrador'));
+    $this->getJson(route('incidencias.create', ['buscar' => 'Gomez']))->assertOk()->assertJsonPath('personal.0.id_personal', $first->id_personal)->assertJsonPath('personal.1.id_personal', $last->id_personal);
+    $this->getJson(route('incidencias.create', ['buscar' => '  Paola   Hernandez ']))->assertOk()->assertJsonCount(1, 'personal')->assertJsonPath('personal.0.id_personal', $first->id_personal)->assertJsonMissingPath('personal.0.persona.curp');
+    $this->getJson(route('incidencias.create', ['buscar' => 'NingunResultado']))->assertOk()->assertJsonCount(0, 'personal');
+    PersonalFormacion::factory()->count(31)->create();
+    $this->getJson(route('incidencias.create'))->assertOk()->assertJsonCount(30, 'personal');
+    $this->getJson(route('incidencias.create', ['buscar' => str_repeat('a', 101)]))->assertUnprocessable();
+});
+
+test('incidence selector keeps advisor assignment restrictions', function () {
+    $personal = PersonalFormacion::factory()->create();
+    $this->actingAs(incidenceAccount('asesor'))->getJson(route('incidencias.create'))->assertOk()->assertJsonCount(0, 'personal');
+    $this->actingAs(incidenceAccount('pasante', $personal->id_persona))->getJson(route('incidencias.create'))->assertForbidden();
+});
+
 function incidenceAccount(string $code, ?int $person = null): User
 {
     $role = Rol::firstOrCreate(['codigo' => $code], ['nombre' => ucfirst($code)]);
